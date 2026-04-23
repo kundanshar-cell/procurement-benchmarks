@@ -1,0 +1,112 @@
+[
+  {
+    "id": "spend-001",
+    "category": "spend_categorisation",
+    "difficulty": "easy",
+    "question": "A purchase order line reads 'Cutting fluid for CNC machines'. What UNSPSC commodity code best describes this?",
+    "answer": "12191507 — Cutting oils",
+    "reasoning": "Cutting fluid used in CNC machining is a metalworking fluid classified under UNSPSC segment 12 (Chemicals), family 12190000 (Lubricants and oils), class 12191500 (Cutting and lubricating and cooling fluids), commodity 12191507 (Cutting oils).",
+    "unspsc_code": "12191507",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "manufacturing", "indirect-spend"]
+  },
+  {
+    "id": "spend-002",
+    "category": "spend_categorisation",
+    "difficulty": "easy",
+    "question": "A vendor invoices for 'Annual Microsoft 365 E3 licences, 200 users'. What spend category does this fall into?",
+    "answer": "43232900 — Software maintenance or support (UNSPSC 43232905: Software maintenance or support fee)",
+    "reasoning": "SaaS/cloud subscription licences are classified as software maintenance and support fees under UNSPSC 43232905, not hardware or professional services. The recurring annual nature confirms it is a subscription, not a one-time software purchase (43232100).",
+    "unspsc_code": "43232905",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "IT-spend", "saas", "software"]
+  },
+  {
+    "id": "spend-003",
+    "category": "spend_categorisation",
+    "difficulty": "medium",
+    "question": "A PO line reads 'Mechanical seal repair service for pump P-201 at Site B'. Should this be classified as Maintenance & Repair (MRO) or Professional Services?",
+    "answer": "MRO — specifically UNSPSC 73152101: Mechanical maintenance or repair services",
+    "reasoning": "Repair of a specific physical asset (pump seal) is MRO spend, not professional services. Professional services imply knowledge work (consulting, advisory). The asset-specific, hands-on nature of seal repair places it firmly in the maintenance and repair category. Misclassifying as professional services would distort MRO budgets and potentially bypass maintenance approval workflows.",
+    "unspsc_code": "73152101",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "mro", "maintenance", "professional-services"]
+  },
+  {
+    "id": "spend-004",
+    "category": "spend_categorisation",
+    "difficulty": "medium",
+    "question": "A finance team receives an invoice for 'Recruitment agency fee — placement of 3 permanent staff'. What UNSPSC code applies?",
+    "answer": "93141600 — Permanent personnel placement (UNSPSC 93141601: Permanent staff recruitment)",
+    "reasoning": "Permanent placement fees are classified under UNSPSC segment 93 (Politics and Civic Affairs Services), family 93141600. This is distinct from temporary staffing (93130000) and professional search services. The 'permanent' keyword is decisive — it determines the UNSPSC family and affects how the spend is reported in workforce analytics.",
+    "unspsc_code": "93141601",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "hr", "recruitment", "indirect-spend"]
+  },
+  {
+    "id": "spend-005",
+    "category": "spend_categorisation",
+    "difficulty": "hard",
+    "question": "A PO line reads 'Thermally insulated transport containers for biological samples — rental, 6 months'. Should this be expensed as equipment rental or classified differently?",
+    "answer": "UNSPSC 78102200 — Transport packaging rental; specifically 78102205 (Cryogenic or temperature-controlled container rental)",
+    "reasoning": "This is a rental of specialised packaging, not equipment in the capital sense. The key distinction: the containers are not owned and are not general equipment — they are transport packaging under rental. Expensing as general equipment rental (rather than packaging rental) would misrepresent the nature of the spend and affect category management reporting for logistics vs. lab supplies.",
+    "unspsc_code": "78102205",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "logistics", "pharma", "rental", "packaging"]
+  },
+  {
+    "id": "spend-006",
+    "category": "spend_categorisation",
+    "difficulty": "easy",
+    "question": "A PO is raised for 'PPE — safety helmets, hi-vis vests, steel-toe boots'. What UNSPSC segment covers personal protective equipment?",
+    "answer": "Segment 46 — Defense and Law Enforcement and Security and Safety Equipment and Supplies; specifically class 46181500 (Protective headwear), 46181600 (Protective footwear), 53102900 (Protective clothing)",
+    "reasoning": "PPE spans two UNSPSC segments. Hard hats and boots sit under segment 46 (Safety Equipment). Hi-vis vests are classified under segment 53 (Apparel and Luggage and Personal Care Products), class 53102900. A common mistake is putting all PPE under a single code — the UNSPSC differentiates by item type, not by its safety purpose.",
+    "unspsc_code": "46181500",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "ppe", "safety", "indirect-spend"]
+  },
+  {
+    "id": "spend-007",
+    "category": "spend_categorisation",
+    "difficulty": "hard",
+    "question": "A line on a vendor invoice reads 'Data centre colocation — half rack, 2kW power, cross-connect fee'. How should these three charges be split across spend categories?",
+    "answer": "Three distinct UNSPSC codes: (1) 81112003 — Collocation services (rack/space), (2) 81112000 — Network services (cross-connect), (3) Power is typically bundled within colocation but can be split to 81111509 (Utility management services) if invoiced separately.",
+    "reasoning": "Colocation invoices are frequently split incorrectly as a single IT line. Rack space is a colocation service. The cross-connect (physical fibre link between racks or to carriers) is a distinct network/connectivity service. Power, if metered separately, is a utility. Correct splitting matters for IT spend analytics and for accurately benchmarking colocation vs. cloud costs.",
+    "unspsc_code": "81112003",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "IT-spend", "colocation", "data-centre"]
+  },
+  {
+    "id": "spend-008",
+    "category": "spend_categorisation",
+    "difficulty": "medium",
+    "question": "A spend report flags a large vendor as 'Miscellaneous Services'. The underlying POs are for pest control, window cleaning, and waste removal at company offices. What is the correct category?",
+    "answer": "Facilities management / Building support services — UNSPSC 76100000 (Cleaning and janitorial services) and 76111500 (Pest control)",
+    "reasoning": "'Miscellaneous Services' is a red flag in spend analytics — it hides real category spend and prevents sourcing leverage. Pest control (76111503), window cleaning (76111601), and waste removal (76130000) are all distinct facilities services. Correctly categorising them enables competitive tendering by facilities category and reveals total facilities spend that would otherwise be invisible.",
+    "unspsc_code": "76100000",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "facilities", "spend-analytics", "miscellaneous"]
+  },
+  {
+    "id": "spend-009",
+    "category": "spend_categorisation",
+    "difficulty": "medium",
+    "question": "An ERP system shows a PO for 'SAP BASIS consulting — system upgrade project, fixed price'. Should this be classified as IT Professional Services or Software Implementation?",
+    "answer": "IT Professional Services — UNSPSC 81111500 (Computer or network or internet security) is wrong; correct is 81111811: Enterprise resource planning ERP implementation service",
+    "reasoning": "SAP BASIS work on an upgrade project is ERP implementation/consulting, not general IT support. Using a generic 'IT Professional Services' code loses the ability to track ERP-specific spend, which is typically one of the largest IT project cost categories. UNSPSC 81111811 is the correct commodity and enables accurate ERP project benchmarking.",
+    "unspsc_code": "81111811",
+    "erp": "SAP ECC",
+    "tags": ["unspsc", "IT-spend", "sap", "consulting"]
+  },
+  {
+    "id": "spend-010",
+    "category": "spend_categorisation",
+    "difficulty": "easy",
+    "question": "A vendor supplies 'Nitrogen gas, bulk, for food packaging'. What UNSPSC family covers industrial gases?",
+    "answer": "12130000 — Industrial gases; specifically 12131500 (Atmospheric gases), commodity 12131501 (Nitrogen)",
+    "reasoning": "Nitrogen for food packaging is an industrial gas (segment 12, family 12130000). It should not be classified under food ingredients or packaging materials even though it is used in a food application. The substance itself — nitrogen gas — determines the UNSPSC code, not the end use.",
+    "unspsc_code": "12131501",
+    "erp": "Agnostic",
+    "tags": ["unspsc", "chemicals", "manufacturing", "food-and-beverage"]
+  }
+]

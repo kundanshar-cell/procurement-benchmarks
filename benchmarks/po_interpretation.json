@@ -1,0 +1,102 @@
+[
+  {
+    "id": "po-001",
+    "category": "po_interpretation",
+    "difficulty": "easy",
+    "question": "What is a blanket purchase order and when would you use one instead of a standard PO?",
+    "answer": "A blanket PO (also called a framework order) is a long-term agreement with a vendor for recurring purchases, with a total value or quantity agreed upfront but individual call-offs made over time. Use it when: you know you will repeatedly buy the same goods/services from the same vendor over a period (typically 12 months), the pricing is agreed, but the exact timing and quantities vary.",
+    "reasoning": "Blanket POs reduce administrative overhead — instead of raising a new PO for each delivery, the requester places a 'release' or 'call-off' against the blanket. This is standard practice for MRO consumables, office supplies, and recurring services. The risk is that blanket POs can become invisible spend — they need active monitoring to ensure they are not overspent or left open after the period ends.",
+    "erp": "Agnostic",
+    "tags": ["blanket-po", "framework-order", "procurement-basics"]
+  },
+  {
+    "id": "po-002",
+    "category": "po_interpretation",
+    "difficulty": "medium",
+    "question": "In SAP MM, what is the difference between document type 'NB' (Standard PO) and 'FO' (Framework Order)?",
+    "answer": "NB (Normalbestellung) is a standard one-time purchase order for a defined quantity and delivery date. FO (Framework Order) is a long-term agreement used for blanket POs where goods or services are called off over time against an agreed total value or quantity. In FO, you set the validity period and total value; individual deliveries are triggered by releases (schedule lines), not by the PO itself.",
+    "reasoning": "Choosing the wrong document type in SAP creates downstream problems: an NB used for a recurring purchase will generate GR-blocking issues when deliveries arrive outside the original schedule. An FO allows flexible call-offs. The document type also drives the approval workflow — FOs often require a different approval chain because of their longer commitment horizon.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "document-type", "nb", "fo", "blanket-po"]
+  },
+  {
+    "id": "po-003",
+    "category": "po_interpretation",
+    "difficulty": "medium",
+    "question": "A PO line in SAP has the 'GR-Based IV' (Goods Receipt-Based Invoice Verification) flag ticked. What does this mean for invoice processing?",
+    "answer": "With GR-Based IV enabled, the system will only allow invoice posting (MIRO) up to the quantity that has been confirmed via goods receipt (MBLNR in MKPF/MSEG). If an invoice arrives for 100 units but only 80 have been goods-receipted, the system will accept 80 and either block or park the remaining 20 until the GR is posted.",
+    "reasoning": "GR-Based IV is a fundamental AP control in SAP. Without it, vendors can invoice ahead of delivery and payments can be made for goods not yet received. With it, the GR is the trigger for payability. This is the core of three-way match in SAP — PO quantity, GR quantity, and invoice quantity must align. The flag is set at the PO item level and drives behaviour in MIRO.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "gr-based-iv", "three-way-match", "invoice-verification"]
+  },
+  {
+    "id": "po-004",
+    "category": "po_interpretation",
+    "difficulty": "easy",
+    "question": "What is a goods receipt (GR) and what role does it play in the procure-to-pay process?",
+    "answer": "A goods receipt is the formal confirmation that ordered goods have been physically received and inspected. It is step 3 in the P2P cycle (PO → GR → Invoice). It updates inventory, triggers liability accrual in finance, and — when GR-Based IV is enabled — authorises payment for the received quantity.",
+    "reasoning": "The GR is where physical reality meets the system. Without a GR, there is no proof of delivery. It is the document that closes the loop between what was ordered and what arrived. In SAP it generates a material document (MBLNR) in MKPF/MSEG and a corresponding financial document. Missing or delayed GRs are one of the most common causes of invoice payment delays and AP accrual errors.",
+    "erp": "Agnostic",
+    "tags": ["goods-receipt", "p2p", "three-way-match", "procurement-basics"]
+  },
+  {
+    "id": "po-005",
+    "category": "po_interpretation",
+    "difficulty": "hard",
+    "question": "A PO is created in SAP with account assignment category 'K' (cost centre). What does this mean and how does it differ from category 'A' (asset)?",
+    "answer": "Account assignment 'K' means the PO line is expensed directly to a cost centre at the point of goods receipt — no inventory is created, the cost goes straight to P&L. Account assignment 'A' means the item is being purchased as a fixed asset — it creates an asset under construction (AuC) record and feeds the asset register. Depreciation then flows from the asset, not a one-time expense.",
+    "reasoning": "Account assignment drives the entire financial treatment of a purchase. A laptop bought with 'K' is expensed immediately; with 'A' it is capitalised and depreciated. Wrong account assignment is one of the most impactful errors in procurement — it affects EBITDA, balance sheet, and tax treatment. Finance and procurement must agree the correct category at PO creation, not after the invoice arrives.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "account-assignment", "cost-centre", "fixed-asset", "capex-opex"]
+  },
+  {
+    "id": "po-006",
+    "category": "po_interpretation",
+    "difficulty": "medium",
+    "question": "In JDE E1, what is the difference between a purchase order (DOCO type OP) and a blanket order (DOCO type OB)?",
+    "answer": "DOCO type OP is a standard purchase order with specific quantities and due dates. DOCO type OB is a blanket order — it holds an agreed total value or quantity but releases are called off using release orders (type OR). The blanket OB does not trigger receiving or invoicing directly; releases against it do.",
+    "reasoning": "JDE E1 mirrors SAP's concept of NB vs FO but uses different terminology. The DOCO (document number) type is the JDE equivalent of SAP's document type. A common JDE implementation error is using OP for all purchases, which creates a proliferation of individual POs for recurring spend and makes spend analytics by vendor harder to consolidate.",
+    "erp": "JDE E1",
+    "tags": ["jde", "blanket-order", "doco", "po-type"]
+  },
+  {
+    "id": "po-007",
+    "category": "po_interpretation",
+    "difficulty": "easy",
+    "question": "What does 'three-way match' mean in procurement?",
+    "answer": "Three-way match is the process of comparing three documents before authorising payment: (1) the Purchase Order (what was ordered, at what price), (2) the Goods Receipt (what was actually delivered), (3) the Vendor Invoice (what the vendor is charging). Payment is approved only when all three align within defined tolerances.",
+    "reasoning": "Three-way match is the fundamental AP control for goods-based procurement. It prevents payment for goods not ordered (no PO), payment for goods not received (no GR), and payment at the wrong price (price variance from PO). Most ERP systems automate this comparison but require all three documents to exist in the system — hence the importance of timely GR posting by operations teams.",
+    "erp": "Agnostic",
+    "tags": ["three-way-match", "ap-controls", "procurement-basics", "invoice-processing"]
+  },
+  {
+    "id": "po-008",
+    "category": "po_interpretation",
+    "difficulty": "hard",
+    "question": "In D365 F&O, a purchase order line has 'Deliver remainder' set to 'Close'. What happens if the vendor delivers only 80 out of 100 ordered units and the invoice is for 80 units?",
+    "answer": "With 'Deliver remainder — Close', the PO line is automatically closed after the first partial delivery. The remaining 20 units are cancelled and the PO commitment is reduced accordingly. The invoice for 80 units will match against the GR for 80 units and process normally. No further deliveries can be posted against this line.",
+    "reasoning": "The 'Deliver remainder' setting in D365 F&O controls whether a PO line stays open for further deliveries after a partial receipt. 'Close' means one delivery closes the line — useful for spot buys where the exact quantity is not critical. 'Open' keeps the line active for the remaining quantity. Choosing the wrong setting either blocks legitimate partial deliveries or leaves PO commitments open on the balance sheet indefinitely.",
+    "erp": "D365 F&O",
+    "tags": ["d365", "partial-delivery", "po-close", "commitment-accounting"]
+  },
+  {
+    "id": "po-009",
+    "category": "po_interpretation",
+    "difficulty": "medium",
+    "question": "What is a purchase requisition (PR) and how does it differ from a purchase order (PO)?",
+    "answer": "A purchase requisition is an internal request to buy something — it is a demand document, not a commitment. It is raised by the requester and approved internally. A purchase order is a formal commercial document sent to a vendor — it is a legal commitment to buy at agreed terms. The PR triggers the procurement process; the PO is the output of it.",
+    "reasoning": "The PR → PO flow is the control gate in procurement. PRs can be rejected, redirected, or consolidated before a commitment is made to the market. Many organisations skip PRs for low-value or repeat purchases, which removes the internal approval step and makes spend harder to control. Maintaining the PR step — even for routine buys — preserves the audit trail and budget check.",
+    "erp": "Agnostic",
+    "tags": ["purchase-requisition", "purchase-order", "procurement-basics", "approval-workflow"]
+  },
+  {
+    "id": "po-010",
+    "category": "po_interpretation",
+    "difficulty": "hard",
+    "question": "A buyer raises a PO in SAP for a service with no fixed quantity — just a value limit of £50,000. Which SAP item category enables this and what controls does it apply?",
+    "answer": "Item category 'D' (Service) with a service entry sheet (ML81N) workflow. The PO sets a value limit; actual services are confirmed via a service entry sheet (SES) which the requester/manager approves. The invoice is then matched against the approved SES value, not a goods receipt quantity.",
+    "reasoning": "For services without a fixed quantity (consulting days, maintenance contracts, time-and-materials work), item category D replaces the GR with a service entry sheet. The SES is the service equivalent of a GR — it confirms that the service was performed. This is often overlooked in SAP implementations, leading to services being bought on item category 'Blank' (stock item), which creates phantom inventory and incorrect financial postings.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "service-po", "item-category-d", "service-entry-sheet", "ml81n"]
+  }
+]

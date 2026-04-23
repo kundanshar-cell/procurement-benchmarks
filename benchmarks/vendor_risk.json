@@ -1,0 +1,102 @@
+[
+  {
+    "id": "risk-001",
+    "category": "vendor_risk",
+    "difficulty": "easy",
+    "question": "A vendor's bank account details change two days before a large invoice payment is due. What is the correct response?",
+    "answer": "Place the payment on hold immediately. Contact the vendor via a previously verified phone number (not the number on the email requesting the change) to confirm the change is legitimate. Do not process payment until the change is verified through out-of-band confirmation.",
+    "reasoning": "Bank account changes shortly before payment are the most common pattern in Business Email Compromise (BEC) fraud. The critical control is out-of-band verification — calling a contact number from your vendor master, not from the email that requested the change. Paying before verification, even if the amount seems routine, creates a non-recoverable loss.",
+    "erp": "Agnostic",
+    "tags": ["fraud", "bec", "vendor-master", "payment-controls"]
+  },
+  {
+    "id": "risk-002",
+    "category": "vendor_risk",
+    "difficulty": "medium",
+    "question": "A preferred vendor for critical components has 85% of its manufacturing in a single factory in one country. Is this a supply chain risk, and how would you mitigate it?",
+    "answer": "Yes — this is a single-point-of-failure (concentration risk) in both geography and facility. Mitigation options: (1) dual-source the component with a second approved vendor, (2) negotiate minimum safety stock holding at the vendor or in your own warehouse, (3) qualify an alternative factory for the same vendor, (4) add a supply continuity clause to the contract requiring vendor to maintain a secondary production capability.",
+    "reasoning": "Concentration risk became a critical procurement metric post-2020. A single factory + single country combination means any localised disruption (natural disaster, political event, labour action, export restriction) can halt your production. The procurement team's role is to quantify the impact (how many days of stock, what is the revenue at risk) and propose a mitigation cost the business can evaluate.",
+    "erp": "Agnostic",
+    "tags": ["supply-chain-risk", "concentration-risk", "dual-sourcing", "resilience"]
+  },
+  {
+    "id": "risk-003",
+    "category": "vendor_risk",
+    "difficulty": "medium",
+    "question": "During vendor onboarding, a new supplier's registered address matches the home address of one of your company's employees. What should happen?",
+    "answer": "Flag as a potential conflict of interest. Escalate to procurement compliance or the internal audit team. The onboarding should be paused until a conflict of interest declaration is completed by the relevant employee and reviewed. Do not approve the vendor until the review concludes.",
+    "reasoning": "Employee-vendor address matches are a standard red flag in vendor master controls and anti-fraud programmes. It can indicate a shell vendor or kickback arrangement. Even if innocent (e.g. a spouse's legitimate business), the conflict of interest must be declared and managed. Approving without review exposes the company to audit findings and reputational risk.",
+    "erp": "Agnostic",
+    "tags": ["fraud", "conflict-of-interest", "vendor-onboarding", "compliance"]
+  },
+  {
+    "id": "risk-004",
+    "category": "vendor_risk",
+    "difficulty": "hard",
+    "question": "A vendor accounts for 60% of your company's total spend in a critical category but has deteriorating financials — two consecutive years of declining revenue and increasing debt. How do you approach this?",
+    "answer": "Treat this as a strategic supply risk. Actions: (1) commission a formal financial health assessment (credit score, Dun & Bradstreet or equivalent), (2) engage the vendor at exec level to understand their position, (3) accelerate qualification of alternative vendors, (4) review contract for step-in rights or termination-for-convenience clauses, (5) assess whether early payment or extended contract terms could stabilise the vendor relationship, (6) build a contingency plan for transition.",
+    "reasoning": "A vendor representing 60% of category spend is a critical dependency. Financial deterioration at this scale is a category-level crisis in the making. The right response is not to wait — it is to buy time through relationship management while simultaneously building exit options. Many organisations do not discover vendor financial distress until insolvency is imminent, at which point options are limited and costs are high.",
+    "erp": "Agnostic",
+    "tags": ["supply-chain-risk", "vendor-financial-health", "strategic-sourcing", "contingency"]
+  },
+  {
+    "id": "risk-005",
+    "category": "vendor_risk",
+    "difficulty": "easy",
+    "question": "What is the difference between vendor debarment and vendor blacklisting in a procurement context?",
+    "answer": "Debarment is a formal, often legally-backed exclusion from bidding on contracts — common in government procurement and typically based on specific legal violations (fraud, bribery, sanctions). Blacklisting is an internal organisational decision to cease doing business with a vendor, which may be for commercial, quality, or ethical reasons without a legal process.",
+    "reasoning": "Many procurement practitioners use these terms interchangeably, which creates risk. Debarment has legal implications — a debarred vendor may be excluded by regulation from public contracts. Internal blacklisting is a policy decision and must be documented to avoid discrimination claims. The distinction matters when advising stakeholders on what actions are available and what obligations apply.",
+    "erp": "Agnostic",
+    "tags": ["vendor-risk", "compliance", "debarment", "governance"]
+  },
+  {
+    "id": "risk-006",
+    "category": "vendor_risk",
+    "difficulty": "medium",
+    "question": "A vendor passes all standard due diligence checks but is a subsidiary of a company that appears on a government sanctions list. Should it be approved?",
+    "answer": "No — do not approve without legal review. Sanctions can apply to subsidiaries and affiliates of listed entities depending on the jurisdiction and the specific sanctions programme. Legal and compliance must assess whether the subsidiary is covered under the sanctions regime. Payment to a sanctions-related entity, even indirectly, can result in severe civil and criminal penalties for the company.",
+    "reasoning": "Sanctions screening of the direct vendor is necessary but not sufficient. Ownership structure screening is required — the beneficial owner test. OFAC (US) and UK OFSI sanctions, for example, can extend liability to entities owned or controlled by sanctioned parties. This is a legal determination, not a procurement one — the correct action is escalation, not approval.",
+    "erp": "Agnostic",
+    "tags": ["sanctions", "compliance", "vendor-risk", "due-diligence"]
+  },
+  {
+    "id": "risk-007",
+    "category": "vendor_risk",
+    "difficulty": "hard",
+    "question": "Your spend analytics team flags that a single vendor has received 47 purchase orders in one quarter, all just below the £10,000 approval threshold. Total spend is £438,000. What does this pattern indicate?",
+    "answer": "This is a classic 'PO splitting' or 'threshold avoidance' pattern — a deliberate or systemic circumvention of procurement approval controls. It should be investigated as a potential fraud or policy violation. The investigation should cover: (1) who raised the POs, (2) whether the vendor is legitimate, (3) whether the work was delivered, (4) whether the requester and vendor have any relationship.",
+    "reasoning": "Approval thresholds exist to ensure appropriate oversight for significant spend. Splitting large purchases into sub-threshold transactions defeats this control. £438,000 broken into 47 transactions is not accidental — the pattern is too precise. This is one of the most common internal fraud indicators in procurement analytics and should trigger an immediate investigation, not just a policy reminder.",
+    "erp": "Agnostic",
+    "tags": ["fraud", "po-splitting", "spend-analytics", "internal-controls"]
+  },
+  {
+    "id": "risk-008",
+    "category": "vendor_risk",
+    "difficulty": "medium",
+    "question": "A vendor consistently delivers on time and within budget but refuses to allow audit rights on their sub-contractors. Should this be a concern?",
+    "answer": "Yes — this is a material contract and supply chain risk. Refusal of sub-contractor audit rights removes visibility into: (1) labour practices and modern slavery compliance, (2) data security and information handling, (3) financial exposure if a sub-contractor fails, (4) whether work is actually being done by the contracted entity. Performance today does not eliminate the risk of a reputational or legal incident caused by an unseen sub-contractor.",
+    "reasoning": "Modern procurement governance, particularly post-UK Modern Slavery Act and GDPR, requires supply chain visibility. A vendor's good performance does not offset the regulatory exposure of not knowing who their sub-contractors are. The correct response is to escalate to legal and either renegotiate the audit clause or risk-assess whether the contract should continue.",
+    "erp": "Agnostic",
+    "tags": ["vendor-risk", "supply-chain-visibility", "audit-rights", "modern-slavery"]
+  },
+  {
+    "id": "risk-009",
+    "category": "vendor_risk",
+    "difficulty": "easy",
+    "question": "What is a 'single source' vendor and why is it a procurement risk?",
+    "answer": "A single-source vendor is one where there is only one supplier capable of or approved to supply a specific product or service. It is a risk because the buying organisation has no competitive leverage, no fallback if the vendor fails, and is exposed to price increases, quality deterioration, or supply disruption with no alternative.",
+    "reasoning": "Single-source situations arise either because the item is genuinely unique (proprietary technology, patent-protected) or because the category has not been actively managed. The distinction matters: a truly sole-source item requires risk mitigation through contract terms and inventory buffers; a single-source-by-default item requires a sourcing project to qualify alternatives.",
+    "erp": "Agnostic",
+    "tags": ["vendor-risk", "single-source", "sourcing", "supply-continuity"]
+  },
+  {
+    "id": "risk-010",
+    "category": "vendor_risk",
+    "difficulty": "hard",
+    "question": "A logistics vendor has ISO 9001 certification. Does this mean their services meet your company's quality requirements?",
+    "answer": "Not necessarily. ISO 9001 certifies that the vendor has a quality management system in place — it does not certify that their service meets your specific requirements. You still need to define your own service level requirements and assess the vendor against them. ISO 9001 is a hygiene factor, not a quality guarantee.",
+    "reasoning": "ISO 9001 is frequently misunderstood in procurement as a quality guarantee. It is actually a process standard — it confirms the vendor has documented procedures and audits them. A vendor can be ISO 9001 certified and still deliver late, damage goods, or fail your KPIs. The correct approach is to use ISO 9001 as a baseline qualifier, then overlay your own contractual KPIs (OTIF rate, damage rate, claims resolution time).",
+    "erp": "Agnostic",
+    "tags": ["vendor-risk", "quality", "iso-9001", "supplier-assessment"]
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "3wm-001",
+    "category": "three_way_match",
+    "difficulty": "easy",
+    "question": "An invoice arrives for £10,500 but the PO was raised for £10,000 and the goods receipt confirms full delivery. What are the possible actions?",
+    "answer": "The invoice has a £500 price variance (5%). Actions depend on configured tolerance: (1) If within tolerance — system auto-posts for payment, (2) If outside tolerance — invoice is blocked and requires buyer review. The buyer must either: approve the variance (raise a PO amendment), reject the invoice and ask the vendor to credit and re-invoice, or negotiate a credit note for the difference.",
+    "reasoning": "Price variances in three-way match are handled by tolerance levels configured in the ERP. In SAP, these are set in SPRO under Logistics Invoice Verification. A common mistake is approving price variances manually without amending the PO — this breaks the audit trail and can mask systematic overcharging by vendors. The PO amendment route is cleaner because it documents the commercial decision.",
+    "erp": "Agnostic",
+    "tags": ["three-way-match", "price-variance", "invoice-block", "tolerance"]
+  },
+  {
+    "id": "3wm-002",
+    "category": "three_way_match",
+    "difficulty": "medium",
+    "question": "A vendor invoices for 100 units at £50 each (£5,000). The PO was for 100 units at £50. But the goods receipt shows only 90 units were delivered. The vendor insists all 100 were shipped. What is the correct process?",
+    "answer": "Pay only for the 90 units confirmed by goods receipt (£4,500). Raise a formal quantity dispute with the vendor, providing the GR documentation as evidence. Request a credit note for 10 units (£500) or await delivery of the remaining 10 units. Do not pay the invoice as submitted — the GR is the controlling document for quantity.",
+    "reasoning": "In a three-way match process, the goods receipt quantity is authoritative for payment purposes. The vendor's shipping documentation does not override the receiving team's count. The 10-unit shortfall must be resolved either by proof of delivery (signed delivery note, carrier POD) or by a credit note. Paying in full before resolution creates a recovery problem — it is much harder to get money back from a vendor than to withhold it.",
+    "erp": "Agnostic",
+    "tags": ["three-way-match", "quantity-variance", "goods-receipt", "dispute"]
+  },
+  {
+    "id": "3wm-003",
+    "category": "three_way_match",
+    "difficulty": "medium",
+    "question": "In SAP, an invoice is posted via MIRO but the system raises a 'price variance' block (payment block R). What SAP transaction is used to release it?",
+    "answer": "MRBR (Release Blocked Invoices). The AP team or buyer reviews the blocked invoice in MRBR, assesses the variance, and either manually releases it (if within business approval authority) or returns it for correction.",
+    "reasoning": "MRBR is the standard SAP transaction for managing blocked invoices from Logistics Invoice Verification. Knowing this transaction matters for LLM benchmarking because it tests whether the model understands not just the concept (invoice block) but the operational workflow (how to unblock it). Many users try to use MR8M (cancel invoice) by mistake, which is destructive — MRBR is the correct non-destructive path.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "mrbr", "invoice-block", "payment-block", "logistics-invoice-verification"]
+  },
+  {
+    "id": "3wm-004",
+    "category": "three_way_match",
+    "difficulty": "hard",
+    "question": "A service PO in SAP uses item category D (service). The vendor invoices £20,000 but the approved service entry sheet (SES) is only £18,000. What happens in MIRO and what are the options?",
+    "answer": "MIRO will accept up to the approved SES value (£18,000) and block or reject the remaining £2,000. Options: (1) Request a credit note from the vendor for £2,000 if the work was overcharged, (2) If the additional work was legitimate, raise a new SES for £2,000, get it approved, then post a supplementary invoice, (3) If the PO value limit is also exceeded, raise a PO amendment first.",
+    "reasoning": "For service POs, the SES replaces the GR as the controlling document. The match is: PO value limit ≥ SES value ≥ Invoice value. The SES approval confirms the work was done; the invoice must not exceed what was approved in the SES. This two-step confirmation (SES approval + invoice match) is stronger than a simple GR because it requires a human to confirm service delivery before payment is authorised.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "service-entry-sheet", "item-category-d", "invoice-variance", "three-way-match"]
+  },
+  {
+    "id": "3wm-005",
+    "category": "three_way_match",
+    "difficulty": "easy",
+    "question": "What is a two-way match and when is it used instead of a three-way match?",
+    "answer": "A two-way match compares only the Purchase Order and the Invoice — there is no goods receipt step. It is used for service purchases where physical delivery cannot be confirmed by a receiving team (e.g. consulting services, software subscriptions, utilities). The invoice is approved when it matches the PO on price and value.",
+    "reasoning": "Two-way match is appropriate when the GR concept does not apply — you cannot 'receive' a consulting day the same way you receive a pallet of goods. However, two-way match is a weaker control because it relies entirely on the PO being correctly set up. For service POs in SAP, the service entry sheet (item category D) effectively introduces a third document, making it functionally a three-way match for services.",
+    "erp": "Agnostic",
+    "tags": ["two-way-match", "three-way-match", "services", "invoice-processing"]
+  },
+  {
+    "id": "3wm-006",
+    "category": "three_way_match",
+    "difficulty": "hard",
+    "question": "An invoice date is 15 January. The goods receipt date is 20 January. The payment terms are Net 30 from invoice date. The AP team pays on 14 February. Is there a problem?",
+    "answer": "Yes — the payment was made before goods were received. The GR date (20 January) is later than the invoice date (15 January), meaning the goods had not arrived when the invoice was processed. Net 30 from invoice date would mean payment by 14 February, but the GR was only on 20 January — so payment was technically authorised before receipt was confirmed. In a strict three-way match environment, payment terms should only begin after all three documents exist.",
+    "reasoning": "Payment term start dates are a subtle but important three-way match issue. If payment terms run from invoice date and the GR comes later, the AP team may pay before goods arrive. Some organisations configure payment terms to start from the later of invoice date or GR date to prevent this. This is an ERP configuration decision with real cash flow and control implications.",
+    "erp": "Agnostic",
+    "tags": ["three-way-match", "payment-terms", "goods-receipt", "ap-controls"]
+  },
+  {
+    "id": "3wm-007",
+    "category": "three_way_match",
+    "difficulty": "medium",
+    "question": "In D365 F&O, what is the 'matching policy' setting on a vendor account and what are the available options?",
+    "answer": "The matching policy in D365 F&O controls how vendor invoices are validated against POs and product receipts. Options are: (1) Not required — no matching performed, (2) Two-way matching — invoice matched to PO only, (3) Three-way matching — invoice matched to PO and product receipt. The policy can be set at the legal entity, vendor, or individual item level, with more specific settings overriding general ones.",
+    "reasoning": "D365 F&O's matching policy hierarchy (legal entity → vendor → item) gives fine-grained control — you can apply two-way match to a service vendor and three-way match to a goods vendor within the same company. Many implementations set three-way match as the default and override for service vendors. Knowing this is testable for LLMs because it requires understanding both the concept and the D365-specific implementation.",
+    "erp": "D365 F&O",
+    "tags": ["d365", "matching-policy", "three-way-match", "accounts-payable"]
+  },
+  {
+    "id": "3wm-008",
+    "category": "three_way_match",
+    "difficulty": "hard",
+    "question": "A vendor sends a credit memo for £1,200 relating to returned goods from a previous delivery. How is this handled in the three-way match process in SAP?",
+    "answer": "A credit memo (Gutschrift) in SAP is posted via MIRO using the 'Credit memo' transaction type. It reverses the original invoice posting and credits the vendor account. The return delivery must first be posted (movement type 122 in MSEG — return to vendor) which creates a negative GR. The credit memo then matches against this negative GR quantity/value. The net effect reduces the AP liability and (if stock was involved) adjusts inventory.",
+    "reasoning": "Credit memos are the mirror image of invoices in three-way match. Movement type 122 (return to vendor) is the MSEG entry that generates the negative GR — without this, the credit memo has no matching GR to verify against. A common error is posting the credit memo without the return delivery, which breaks the GR-IV link and leaves the inventory records incorrect.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "credit-memo", "return-delivery", "movement-type-122", "mseg"]
+  },
+  {
+    "id": "3wm-009",
+    "category": "three_way_match",
+    "difficulty": "medium",
+    "question": "What is an 'invoice tolerance' and why does it exist in procurement?",
+    "answer": "An invoice tolerance is a configured allowed variance between the PO value/quantity and the invoice value/quantity, within which the invoice is automatically approved without manual intervention. It exists because minor rounding differences, currency fluctuation, or small freight charges are commercially acceptable and should not require manual buyer review. Typical tolerances: ±0.5% on price, ±1% on quantity.",
+    "reasoning": "Without tolerances, every penny of difference between a PO and invoice would create a manual work queue — operationally impractical. But tolerances set too wide become a control weakness — vendors learn they can overcharge by 4.9% (just below a 5% tolerance) on every invoice. Tolerance settings require a balance between operational efficiency and financial control, and should be reviewed regularly against vendor performance data.",
+    "erp": "Agnostic",
+    "tags": ["invoice-tolerance", "three-way-match", "ap-controls", "configuration"]
+  },
+  {
+    "id": "3wm-010",
+    "category": "three_way_match",
+    "difficulty": "easy",
+    "question": "A company's AP team is processing invoices without purchase orders ('non-PO invoices') using a manual approval email chain. What is the risk of this approach?",
+    "answer": "Significant control risk: (1) no budget check — spend is committed without a PO approval, (2) no price validation — the invoice amount is not compared to any agreed rate, (3) no delivery confirmation — payment is made with no proof of receipt, (4) audit trail is weak — email chains can be lost or manipulated, (5) duplicate payment risk — no system control to prevent the same invoice being paid twice.",
+    "reasoning": "Non-PO invoices (also called 'maverick spend' or 'off-contract spend') bypass every procurement control. In a well-run P2P process, all spend above a de minimis threshold should have a PO. Email-approval of invoices is a symptom of either a procurement policy failure or an ERP adoption problem. The fix is to drive PO coverage — not to accept non-PO invoices as normal.",
+    "erp": "Agnostic",
+    "tags": ["non-po-invoice", "maverick-spend", "ap-controls", "procurement-governance"]
+  }
+]

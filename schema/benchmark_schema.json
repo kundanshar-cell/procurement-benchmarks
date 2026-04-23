@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProcurementBenchmark",
+  "type": "object",
+  "required": ["id", "category", "difficulty", "question", "answer", "reasoning"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier, e.g. spend-001"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "spend_categorisation",
+        "vendor_risk",
+        "po_interpretation",
+        "three_way_match",
+        "invoice_processing"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "question": {
+      "type": "string",
+      "description": "The question posed to the LLM"
+    },
+    "context": {
+      "type": "string",
+      "description": "Optional — a PO line, invoice excerpt, or ERP field set given as context"
+    },
+    "answer": {
+      "type": "string",
+      "description": "The ground-truth answer"
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "Why this is the correct answer — the domain logic behind it"
+    },
+    "unspsc_code": {
+      "type": "string",
+      "description": "Applicable UNSPSC commodity code (spend_categorisation questions)"
+    },
+    "erp": {
+      "type": "string",
+      "description": "ERP system this question is specific to, if any",
+      "enum": ["SAP ECC", "JDE E1", "D365 F&O", "Agnostic"]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

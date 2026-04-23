@@ -1,0 +1,102 @@
+[
+  {
+    "id": "inv-001",
+    "category": "invoice_processing",
+    "difficulty": "easy",
+    "question": "In SAP, what is the difference between a logistics invoice (posted via MIRO) and a financial invoice (posted via FB60)?",
+    "answer": "MIRO (Logistics Invoice Verification) is used for invoices that have a corresponding purchase order and goods receipt — it performs the three-way match. FB60 is a direct financial posting used for invoices with no PO (e.g. utilities, rent, one-off payments) — it bypasses the procurement validation and posts directly to an G/L account or cost centre.",
+    "reasoning": "Using FB60 for PO-based invoices is a common error that breaks the three-way match audit trail and can result in duplicate payments (the PO remains open for further invoicing even after FB60 posts). MIRO is the correct transaction for any invoice that relates to a PO. The distinction is important for AP audits — MIRO invoices have a full P2P audit trail; FB60 invoices do not.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "miro", "fb60", "logistics-invoice-verification", "ap"]
+  },
+  {
+    "id": "inv-002",
+    "category": "invoice_processing",
+    "difficulty": "medium",
+    "question": "An invoice is received in a currency different from the PO currency. How should this be handled?",
+    "answer": "The invoice should be rejected and the vendor asked to resubmit in the PO currency, unless the contract explicitly permits invoicing in an alternative currency. If the contract allows it, the ERP should convert using the agreed exchange rate basis (spot rate, monthly average, or contract rate). Any forex variance between the PO rate and the payment rate is a finance matter — it should be posted to an exchange rate variance account, not absorbed into the purchase price.",
+    "reasoning": "Currency mismatches on invoices are a common source of three-way match failures and financial misstatement. The PO currency should match the contract currency. If a vendor invoices in a different currency, the converted value may exceed the PO commitment, creating a system block. Forex variance is a treasury/finance decision, not an AP decision — AP should not manually adjust invoice values to force a match.",
+    "erp": "Agnostic",
+    "tags": ["multi-currency", "forex", "invoice-processing", "three-way-match"]
+  },
+  {
+    "id": "inv-003",
+    "category": "invoice_processing",
+    "difficulty": "hard",
+    "question": "In SAP, what tables store logistics invoice data and what is the relationship between them?",
+    "answer": "RBKP stores the invoice document header (vendor, invoice date, total amount, currency, reference). RSEG stores the invoice line items (PO number, PO line, quantity, amount, tax code). They are linked by BELNR (accounting document number) and GJAHR (fiscal year). The corresponding financial accounting document is in BKPF (header) and BSEG (line items), linked via the same BELNR/GJAHR.",
+    "reasoning": "This is a core SAP data model question that data engineers working on spend analytics must understand. RBKP/RSEG is the MM-side of the invoice; BKPF/BSEG is the FI-side. A complete invoice picture requires joining both. Common mistake: querying only BSEG for AP spend data and missing the PO reference, which lives in RSEG. The join key is RBKP.BELNR = BKPF.BELNR for the same company code and fiscal year.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "rbkp", "rseg", "bkpf", "bseg", "data-model", "spend-analytics"]
+  },
+  {
+    "id": "inv-004",
+    "category": "invoice_processing",
+    "difficulty": "medium",
+    "question": "A vendor issues a 'pro forma invoice' before goods are shipped. Should this be posted in the ERP for payment?",
+    "answer": "No. A pro forma invoice is not a demand for payment — it is a statement of goods/services to be supplied, used for customs, shipping, or letter of credit purposes. It has no legal payment obligation. Only a commercial invoice (issued after delivery) should be posted in the ERP and processed for payment.",
+    "reasoning": "Pro forma invoices are frequently mislabelled or confused with commercial invoices, particularly in international trade. Posting a pro forma for payment would mean paying before goods are received, which defeats the purpose of three-way match. AP teams need clear guidance on what constitutes a valid payment document — typically: commercial invoice with date, invoice number, vendor registration details, and reference to the PO.",
+    "erp": "Agnostic",
+    "tags": ["pro-forma-invoice", "invoice-processing", "international-trade", "ap-controls"]
+  },
+  {
+    "id": "inv-005",
+    "category": "invoice_processing",
+    "difficulty": "hard",
+    "question": "What is an evaluated receipt settlement (ERS) and which vendors is it appropriate for?",
+    "answer": "ERS (also called self-billing or invoice-less processing) is where the buyer automatically generates and posts the invoice upon goods receipt — the vendor does not send an invoice. The system creates the invoice based on the GR quantity and the PO price. It is appropriate for high-volume, high-trust vendors with stable pricing and very low dispute rates (e.g. large raw material suppliers, EDI-connected vendors).",
+    "reasoning": "ERS eliminates the vendor invoice entirely — it is the highest maturity level of P2P automation. The prerequisite is that pricing is agreed and stable (no price negotiations at invoice time) and GR accuracy is very high (the GR quantity is the basis of payment). In SAP, ERS is configured at vendor and PO level. The risk is that GR errors directly translate to payment errors with no vendor invoice to catch them.",
+    "erp": "SAP ECC",
+    "tags": ["ers", "evaluated-receipt-settlement", "self-billing", "p2p-automation", "sap"]
+  },
+  {
+    "id": "inv-006",
+    "category": "invoice_processing",
+    "difficulty": "medium",
+    "question": "In JDE E1, what table stores supplier invoice header data and what field links it to the purchase order?",
+    "answer": "F0411 (Accounts Payable Ledger) stores supplier invoice header data. The field DODOC (Document Number) holds the invoice reference, and DOCO (Order Number) links back to the purchase order in F4301. The company code is held in KCOO, matching the purchase order's KCOO in F4301.",
+    "reasoning": "JDE E1 data model knowledge is essential for finance data engineers working on AP analytics in JDE environments. F0411 is the AP ledger equivalent of SAP's BSEG for vendor items. The DOCO linkage to F4301 (PO header) is the join that enables three-way match reporting. Without this link, invoice spend cannot be tied back to PO commitments in JDE.",
+    "erp": "JDE E1",
+    "tags": ["jde", "f0411", "f4301", "data-model", "ap", "spend-analytics"]
+  },
+  {
+    "id": "inv-007",
+    "category": "invoice_processing",
+    "difficulty": "easy",
+    "question": "What is a duplicate invoice and how do ERP systems typically prevent them?",
+    "answer": "A duplicate invoice is the same invoice submitted and paid more than once. ERPs prevent duplicates by checking a combination of: vendor number, invoice number (vendor's reference), invoice date, and invoice amount. If all four match an existing posted document, the system raises a duplicate warning or blocks the posting.",
+    "reasoning": "Duplicate payments are one of the most common and costly AP errors — studies suggest 0.1–0.5% of invoices are duplicates in organisations without strong controls. The ERP duplicate check relies on consistent vendor invoice numbering. Weaknesses: vendors who use non-unique invoice numbers, invoices submitted via multiple channels (email + post + EDI), and invoices posted by different AP clerks who each search only their own queue.",
+    "erp": "Agnostic",
+    "tags": ["duplicate-invoice", "ap-controls", "invoice-processing", "erp"]
+  },
+  {
+    "id": "inv-008",
+    "category": "invoice_processing",
+    "difficulty": "hard",
+    "question": "In D365 F&O, what is the 'invoice register' and how does it differ from posting a vendor invoice directly?",
+    "answer": "The invoice register in D365 F&O is a preliminary posting journal that captures invoice receipt without creating a full AP liability — it accrues the invoice in a suspense account (typically 'Invoices not received' or similar). This is used when an invoice arrives but cannot yet be matched or approved. A direct vendor invoice posting creates the full AP liability immediately. The register allows AP teams to timestamp invoice receipt for payment terms and audit purposes without pre-approving it.",
+    "reasoning": "The invoice register is important for accrual accuracy — it ensures that period-end accruals reflect invoices received but not yet posted. It also starts the payment terms clock from receipt date, not approval date. Many D365 implementations skip the register and post directly, which means late approvals can distort payment term calculations and period-end balance sheet figures.",
+    "erp": "D365 F&O",
+    "tags": ["d365", "invoice-register", "accrual", "accounts-payable", "period-end"]
+  },
+  {
+    "id": "inv-009",
+    "category": "invoice_processing",
+    "difficulty": "medium",
+    "question": "A vendor's payment terms are '2/10 Net 30'. What does this mean and when should the buyer pay?",
+    "answer": "2/10 Net 30 means: pay within 10 days and take a 2% early payment discount; or pay the full amount within 30 days. The buyer should evaluate the effective annual interest rate of the discount: 2% for 20 days = ~36% annualised. If the company's cost of capital is below 36%, taking the discount is financially beneficial.",
+    "reasoning": "Early payment discount evaluation is a core treasury and AP skill. 2/10 Net 30 is one of the most common payment term structures globally. The annualised rate calculation (discount % / (1 - discount %) × 365 / days saved) shows that most early payment discounts are very attractive compared to typical borrowing rates. LLMs should be able to both interpret the term and evaluate whether taking the discount makes financial sense.",
+    "erp": "Agnostic",
+    "tags": ["payment-terms", "early-payment-discount", "treasury", "accounts-payable"]
+  },
+  {
+    "id": "inv-010",
+    "category": "invoice_processing",
+    "difficulty": "hard",
+    "question": "An AP clerk posts a vendor invoice in SAP via MIRO but uses the wrong tax code, resulting in incorrect VAT calculation. The invoice is already paid. What is the correct remediation?",
+    "answer": "The invoice cannot be simply 'edited' after posting in SAP — financial documents are immutable. Remediation steps: (1) cancel the original invoice document using MR8M (if the payment has not yet been cleared) or via a reversal in FI (FB08) if it has, (2) re-post the invoice with the correct tax code via MIRO, (3) if the vendor has already been paid the incorrect amount, raise a debit memo or coordinate with the vendor on a credit note for the VAT difference, (4) submit a corrected VAT return if the period is still open.",
+    "reasoning": "Tax code errors on posted invoices are a VAT compliance issue, not just an accounting correction. In jurisdictions with audit rights (EU VAT, UK HMRC), incorrectly reported input tax can result in penalties. The immutability of SAP financial postings means reversal + reposting is always the correct path — never ask an SAP user to 'edit' a posted document. The VAT return impact must also be assessed.",
+    "erp": "SAP ECC",
+    "tags": ["sap", "vat", "tax-code", "mr8m", "miro", "invoice-correction", "compliance"]
+  }
+]
